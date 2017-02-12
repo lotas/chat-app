@@ -1,5 +1,8 @@
 # Chat App: Backend and Web-Client
 
+![Demo](http://g.recordit.co/Ei4aSxodcQ.gif "Demo interaction")
+
+
 Pure javascript multi-user chat application.
 
 Users are peristed in processes memory, messages are not.
