@@ -5,6 +5,7 @@ module.exports = {
         "node": true
     },
     "globals": {
+        "Vue": true
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -76,7 +77,7 @@ module.exports = {
         "guard-for-in": "error",
         "handle-callback-err": "error",
         "id-blacklist": "error",
-        "id-length": "error",
+        "id-length": "off",
         "id-match": "error",
         "indent": "off",
         "init-declarations": "error",
@@ -111,6 +112,7 @@ module.exports = {
         "no-catch-shadow": "error",
         "no-confusing-arrow": "error",
         "no-continue": "error",
+        "no-case-declarations": "off",
         "no-div-regex": "error",
         "no-duplicate-imports": "error",
         "no-else-return": "error",
@@ -178,7 +180,7 @@ module.exports = {
         "no-sync": "error",
         "no-tabs": "error",
         "no-template-curly-in-string": "error",
-        "no-ternary": "error",
+        "no-ternary": "off",
         "no-throw-literal": "error",
         "no-trailing-spaces": "error",
         "no-undef-init": "error",
@@ -217,7 +219,7 @@ module.exports = {
         "prefer-numeric-literals": "error",
         "prefer-promise-reject-errors": "error",
         "prefer-reflect": "off",
-        "prefer-rest-params": "error",
+        "prefer-rest-params": "off",
         "prefer-spread": "error",
         "prefer-template": "error",
         "quote-props": "off",
@@ -259,7 +261,7 @@ module.exports = {
         ],
         "valid-jsdoc": "off",
         "vars-on-top": "error",
-        "wrap-iife": "error",
+        "wrap-iife": "off",
         "wrap-regex": "error",
         "yield-star-spacing": "error",
         "yoda": [

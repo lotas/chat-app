@@ -1,54 +1,92 @@
-const API = window.location.origin;
+(function initChatApi() {
+    const API = window.location.origin;
 
-function registerUser(name) {
-    return fetch(`${API}/user`, {
-        headers: new Headers({
-		    'Content-Type': 'application/json'
-	    }),
-        method: 'POST',
-        body: JSON.stringify({name: name})
-    });
-}
+    /**
+     * Send register user request
+     *
+     * @param {String} name
+     * @return {Promise}
+     */
+    function registerUser(name) {
+        return fetch(`${API}/user`, {
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            method: 'POST',
+            body: JSON.stringify({name: name})
+        });
+    }
 
-function unregisterUser(authToken) {
-    return fetch(`${API}/user`, {
-        headers: new Headers({
-		    'Content-Type': 'application/json'
-	    }),
-        method: 'DELETE',
-        body: JSON.stringify({authToken: authToken})
-    });
-}
+    /**
+     * Unregister user
+     *
+     * @param {String} authToken
+     * @return {Promise}
+     */
+    function unregisterUser(authToken) {
+        return fetch(`${API}/user`, {
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            method: 'DELETE',
+            body: JSON.stringify({authToken: authToken})
+        });
+    }
 
-function fetchUsersList() {
-    return fetch(`${API}/users`).then(res => res.json());
-}
+    /**
+     * Get list of users
+     *
+     * @return {Promise}
+     */
+    function fetchUsersList() {
+        return fetch(`${API}/users`).then(res => res.json());
+    }
 
-function sendMessageTo(to, text, authToken) {
-    return fetch(`${API}/message`, {
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        }),
-        method: 'POST',
-        body: JSON.stringify({
-            to: to,
-            text: text,
-            authToken: authToken
-        })
-    });
-}
+    /**
+     * Send message via API
+     *
+     * @param {String} to
+     * @param {String} text
+     * @param {String} authToken
+     * @return {Promise}
+     */
+    function sendMessageTo(to, text, authToken) {
+        return fetch(`${API}/message`, {
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            method: 'POST',
+            body: JSON.stringify({
+                to: to,
+                text: text,
+                authToken: authToken
+            })
+        });
+    }
 
-function connectWs(authToken, onMessage) {
-    var ws = new WebSocket(`ws://${window.location.host}?authToken=${authToken}`);
-    ws.onopen = ev => {
-        ws.sendMsg = msg => ws.send(JSON.stringify(msg));
-        ws.onmessage = msg => {
-            try {
+    /**
+     * Send register user request
+     *
+     * @param {String} authToken
+     * @param {Function} onMessage will be called with (msg, socket)
+     * @return {Promise}
+     */
+    function connectWs(authToken, onMessage) {
+        let ws = new WebSocket(`ws://${window.location.host}?authToken=${authToken}`);
+        ws.onopen = () => {
+            ws.sendMsg = msg => ws.send(JSON.stringify(msg));
+            ws.onmessage = msg => {
                 let decoded = JSON.parse(msg.data);
                 onMessage(decoded, ws);
-            } catch (e) {
-                console.error(e);
-            }
-        };
+            };
+        }
     }
-}
+
+    window.ChatApi = {
+        registerUser: registerUser,
+        unregisterUser: unregisterUser,
+        fetchUsersList: fetchUsersList,
+        sendMessageTo: sendMessageTo,
+        connectWs: connectWs
+    };
+})();

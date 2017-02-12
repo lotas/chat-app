@@ -1,8 +1,10 @@
+/* eslint require-jsdoc: "off" */
+
 Vue.component('chat-users', {
     props: ['users', 'cnts'],
     template: '#chat-users-template',
     methods: {
-        selectUser: function(user) {
+        selectUser: function selectUser(user) {
             this.$parent.selectUser(user);
         }
     }
@@ -11,10 +13,10 @@ Vue.component('chat-message', {
     props: ['msg'],
     template: '#chat-message-template',
     computed: {
-        date: function() {
+        date: function date() {
             return new Date(this.msg.sentAt).toLocaleString();
         },
-        status: function() {
+        status: function status() {
             switch(this.msg.status) {
                 case 0: return 'sent';
                 case 1: return 'delivered';
@@ -33,7 +35,7 @@ Vue.component('debug', {
 const STORAGE_USER = 'auth.user';
 const STORAGE_MESSAGE_TO = 'chat.msgto';
 
-var ChatApp = new Vue({
+let ChatApp = new Vue({
     el: '#chatApp',
     data: {
         user: getFromStorage(STORAGE_USER),
@@ -46,16 +48,18 @@ var ChatApp = new Vue({
         counts: {}
     },
     computed: {
-        isGuest: function() {
+        isGuest: function isGuest() {
             return !this.user;
         },
-        logMessages: function() {
+        logMessages: function logMessages() {
             return this.log.reverse().join("\n");
         },
         usersFiltered: {
             cache: false,
             get() {
-                let users = this.user ? this.users.filter(a => a !== this.user.name) : this.users;
+                let users = this.user
+                    ? this.users.filter(a => a !== this.user.name)
+                    : this.users;
                 return users.map(user => ({
                     name: user,
                     cnt: this.counts[user] || 0
@@ -63,13 +67,13 @@ var ChatApp = new Vue({
             }
         }
     },
-    created: function() {
+    created: function created() {
         if (this.user) {
-            connectWs(this.user.authToken, onSocketMsg);
+            window.ChatApi.connectWs(this.user.authToken, onSocketMsg);
         }
     },
     methods: {
-        appendMessage: function(to, msg) {
+        appendMessage: function appendMessage(to, msg) {
             if (!this.messages[to]) {
                 this.messages[to] = [];
             }
@@ -77,14 +81,14 @@ var ChatApp = new Vue({
             this.messages[to].push(msg);
             this.counts[to] = this.messages[to].length;
 
-            let msgList = this.$refs.msgList;
+            let {msgList} = this.$refs;
             if (msgList) {
                 setTimeout(() => {
                     msgList.scrollTop = msgList.scrollHeight;
                 }, 10);
             }
         },
-        updateMessageStatus: function(to, msgId, newStatus) {
+        updateMessageStatus: function updateMessageStatus(to, msgId, newStatus) {
             let msgs = this.messages[to]
             if (msgs) {
                 let idx = msgs.findIndex(msg => msg.id === msgId);
@@ -93,18 +97,18 @@ var ChatApp = new Vue({
                 }
             }
         },
-        selectUser: function(user) {
+        selectUser: function selectUser(user) {
             this.messageTo = user;
             setToStorage(STORAGE_MESSAGE_TO, user);
         },
-        leaveChat: function() {
-            unregisterUser(this.user.authToken)
+        leaveChat: function leaveChat() {
+            window.ChatApi.unregisterUser(this.user.authToken)
                 .then(res => {
                     if (res.ok) {
-                        authUser = null;
+                        ChatApp.user = null;
                     } else {
                         res.text().then(data => {
-                            debug('Unregister not ok: ' + data);
+                            debug('Unregister not ok', data);
                         })
                     }
                 });
@@ -112,8 +116,8 @@ var ChatApp = new Vue({
             setToStorage(STORAGE_USER, null);
             ChatApp.user = null;
         },
-        sendMessage: function() {
-            sendMessageTo(this.messageTo, this.msgInput, this.user.authToken)
+        sendMessage: function sendMessage() {
+            window.ChatApi.sendMessageTo(this.messageTo, this.msgInput, this.user.authToken)
                 .then(res => {
                     if (res.ok) {
                         res.json().then(data => {
@@ -128,22 +132,21 @@ var ChatApp = new Vue({
                     }
                 });
         },
-        register: function() {
-            registerUser(this.regUserName)
+        register: function register() {
+            window.ChatApi.registerUser(this.regUserName)
                 .then(res => {
                     if (res.ok) {
-                        res.json().then(data => {
-                            authUser = data;
+                        res.json().then(authUser => {
                             ChatApp.user = authUser;
                             setToStorage(STORAGE_USER, authUser);
 
-                            debug(data);
-                            connectWs(authUser.authToken, onSocketMsg);
-                            fetchUsersList().then(renderUsers);
+                            debug(authUser);
+                            window.ChatApi.connectWs(authUser.authToken, onSocketMsg);
+                            window.ChatApi.fetchUsersList().then(renderUsers);
                         });
                     } else {
                         res.text().then(data => {
-                            debug('Register not ok: ' + data);
+                            debug('Register not ok: ', data);
                         })
                     }
                 });
@@ -151,7 +154,6 @@ var ChatApp = new Vue({
     }
 });
 
-var authUser;
 const MESSAGE_STATUS_DELIVERED = 1;
 
 function onSocketMsg(msg, ws) {
@@ -188,18 +190,22 @@ function onSocketMsg(msg, ws) {
 function renderUsers(users) {
     ChatApp.users = users;
 }
-fetchUsersList().then(renderUsers);
+window.ChatApi.fetchUsersList().then(renderUsers);
 
 function debug() {
-    let str = [].map.call(arguments, arg => {
-        return typeof arg === 'String' ? arg : JSON.stringify(arg)
+    let str = [].map.call(arguments, function mapArg(arg) {
+        return typeof arg === 'string'
+                ? arg
+                : JSON.stringify(arg)
     }).join(', ');
 
     ChatApp.log.push(str);
 }
 
 function getFromStorage(key) {
-    return sessionStorage[key] ? JSON.parse(sessionStorage[key]) : null;
+    return sessionStorage[key]
+                ? JSON.parse(sessionStorage[key])
+                : null;
 }
 function setToStorage(key, value) {
     sessionStorage[key] = JSON.stringify(value);

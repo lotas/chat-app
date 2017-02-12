@@ -41,7 +41,12 @@
         </div>
         <hr>
         <div v-if="user">
-          <div class="messages">
+          <div class="messages" v-if="!messageTo">
+            <p>
+              <em>Please select recepient on the right</em>
+            </p>
+          </div>
+          <div class="messages" v-show="messageTo">
               <h4>Chat with {{messageTo}}</h4>
               <ul class="list-group" ref="msgList">
                 <li v-for="msg in messages[messageTo]" class="list-group-item">
