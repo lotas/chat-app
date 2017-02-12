@@ -46,8 +46,7 @@ function onConnect(ws) {
     const msg = JSON.parse(message);
 
     if (msg && msg.type) {
-      switch(msg.type) {
-        case 'MessageAck':
+      if (msg.type === 'MessageAck') {
           // notify sender that message was delivered
           let sender = UserRegistry.getByName(msg.from);
           if (sender && sender.ws) {
@@ -55,7 +54,6 @@ function onConnect(ws) {
           } else {
             debug(`Cannot confirm MessageAck, user not found: ${msg.from}`);
           }
-          break;
       }
       debug(`New message: ${msg.type}`, msg);
     }

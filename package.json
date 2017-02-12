@@ -10,7 +10,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "postinstall": "cp -r ./node_modules/vue/dist/vue*js ./public/assets && cp -r ./node_modules/bootstrap/dist/ ./public/assets/"
+    "postinstall": "cp -r ./node_modules/vue/dist/vue*js ./public/assets && cp -r ./node_modules/bootstrap/dist/ ./public/assets/",
+    "test": "eslint *.js chat"
   },
   "dependencies": {
     "body-parser": "^1.16.1",
@@ -19,5 +20,9 @@
     "express": "^4.14.1",
     "vue": "^2.1.10",
     "ws": "^2.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^3.15.0",
+    "jasmine": "^2.5.3"
   }
 }
