@@ -57,6 +57,19 @@ $ PORT=34567 node index.js
 $ DEBUG=chat* node index.js
 ```
 
+## Docker
+
+Alternatively can be built using `docker`
+
+```
+# build container
+docker build -t lotas/chat-app .
+
+# run container
+docker run -it -p 12345:1337  lotas/chat-app
+
+# open browser at http://localhost:12345
+```
 
 # API
 
