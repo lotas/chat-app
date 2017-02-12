@@ -1,0 +1,10 @@
+
+const MESSAGE_STATUS_SENT = 0;
+const MESSAGE_STATUS_DELIVERED = 1;
+const MESSAGE_STATUS_OFFLINE = 2;
+
+module.exports = {
+  sent: MESSAGE_STATUS_SENT,
+  delivered: MESSAGE_STATUS_DELIVERED,
+  offline: MESSAGE_STATUS_OFFLINE
+};
