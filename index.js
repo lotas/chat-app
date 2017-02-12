@@ -31,3 +31,5 @@ wss.on('connection', socketRoutes.onConnect);
 server.listen(PORT, () => {
   console.log(`Server is running at:\nhttp://${HOST}:${PORT}/`);
 });
+
+module.exports = app;

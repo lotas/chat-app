@@ -83,6 +83,27 @@ http://localhost:1337/
 
 Browser should be opened using mapped port `12345`: `http://localhost:12345` (or docker-machine host instead of localhost)
 
+## Testing
+
+`eslint` checks syntax, `jasmine` runs simple specs against express app.
+
+```bash
+$ npm test
+
+> chat-app@1.0.0 test chat-app
+> eslint *.js chat public/*.js && jasmine **/*.spec.js
+
+Started
+.Server is running at:
+http://localhost:1337/
+........
+
+
+9 specs, 0 failures
+Finished in 0.091 seconds
+
+```
+
 # API
 
 ## Chat Message format
