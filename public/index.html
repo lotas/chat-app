@@ -1,0 +1,109 @@
+<html>
+<head>
+    <title>Chat app</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/assets/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <div class="container" id="chatApp">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">ChatApp</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li v-if="isGuest">
+              <a href="#">Not registered</a>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li v-if="user"><a v-on:click="leaveChat" href="#">Leave chat</a></li>
+          </ul>
+          <p class="navbar-text navbar-right" v-if="user">
+            Signed in as <strong>{{user.name}}</strong>
+          </p>
+        </div>
+      </div>
+    </nav>
+
+    <div class="row">
+      <div class="col-sm-9">
+        <div v-if="isGuest">
+          <h2>Register:</h2>
+          <div>
+            <form v-on:submit.prevent="register">
+              <input type="text" v-model="regUserName" placeholder="username" />
+              <input class="btn btn-primary" type="submit" value="Register" />
+            </form>
+          </div>
+        </div>
+        <hr>
+        <div v-if="user">
+          <div class="messages">
+              <h4>Chat with {{messageTo}}</h4>
+              <ul class="list-group" ref="msgList">
+                <li v-for="msg in messages[messageTo]" class="list-group-item">
+                  <chat-message v-bind:msg="msg"></chat-message>
+                </li>
+              </ul>
+              <form v-on:submit.prevent="sendMessage">
+                <div class="input-group">
+                  <input class="form-control" type="text" v-model="msgInput" value="" placeholder="Message">
+                  <span class="input-group-btn">
+                    <input class="btn btn-small btn-success" type="submit" value="Send">
+                  </span>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <chat-users
+          :users="usersFiltered"
+          :cnts="counts"></chat-users>
+      </div>
+    </div>
+
+    <hr>
+    <debug v-bind:log="logMessages"></debug>
+  </div>
+
+<script type="text/x-template" id="chat-users-template">
+  <div>
+      <h4>Users:</h4>
+      <ul class="list-group">
+          <li class="list-group-item" v-for="user in users">
+              <span class="badge">{{user.cnt}}</span>
+              <a href="#" v-on:click="selectUser(user.name)">{{user.name}}</a>
+          </li>
+      </ul>
+  </div>
+</script>
+<script type="text/x-template" id="chat-message-template">
+  <div>
+      <strong>{{msg.from}}</strong>&gt;
+      {{msg.text}}
+      <span class="pull-right label label-default">
+          {{status}}
+      </span>
+      <em class="pull-right date">
+          {{date}}
+      </em>
+  </div>
+</script>
+<script type="text/x-template" id="debug-template">
+<div class="debug">
+    <hr>
+    <pre>
+    {{ log }}
+    </pre>
+</div>
+</script>
+  <script src="assets/vue.js"></script>
+  <script src="chat.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
