@@ -36,7 +36,7 @@ Unregistering user requires `authToken` also.
 
 ## Installation
 
-```
+```bash
 $ yarn
 
 # or
@@ -47,7 +47,7 @@ $ npm i
 
 Start the server: and then open `http://localhost:1337` in browser.
 
-```
+```bash
 $ node index.js
 
 # or under custom port
@@ -61,15 +61,27 @@ $ DEBUG=chat* node index.js
 
 Alternatively can be built using `docker`
 
-```
+```bash
 # build container
-docker build -t lotas/chat-app .
+$ docker build -t lotas/chat-app .
 
 # run container
-docker run -it -p 12345:1337  lotas/chat-app
+$ docker run -it -p 12345:1337  lotas/chat-app
+npm info it worked if it ends with ok
+npm info using npm@3.9.5
+npm info using node@v6.2.2
+npm info lifecycle chat-app@1.0.0~prestart: chat-app@1.0.0
+npm info lifecycle chat-app@1.0.0~start: chat-app@1.0.0
 
-# open browser at http://localhost:12345
+> chat-app@1.0.0 start /opt/app
+> node index.js
+
+Server is running at:
+http://localhost:1337/
+
 ```
+
+Browser should be opened using mapped port `12345`: `http://localhost:12345` (or docker-machine host instead of localhost)
 
 # API
 
