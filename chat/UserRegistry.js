@@ -11,6 +11,7 @@ const EVENT_LIST_CHANGE = 'listChange';
  *
  * 'userAdd' - emitted when new user has joined
  * 'userRemove' - emitted when user was removed
+ * 'listChange' - emitted whenever list changes
  */
 class UserRegistry extends EventEmitter {
   constructor() {
