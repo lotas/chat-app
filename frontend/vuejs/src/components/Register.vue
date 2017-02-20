@@ -25,6 +25,10 @@
     },
     methods: {
       register: function register() {
+        if (!this.regUserName) {
+          return false
+        }
+
         const errHandler = (err, status) => this.error = err;
 
         return api.registerUser(this.regUserName)

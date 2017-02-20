@@ -69,4 +69,19 @@ describe('Register.vue', () => {
     }).catch(done);
   })
 
+  it('should submit on click', done => {
+    sandbox.stub(api, "registerUser")
+      .returns(Promise.resolve());
+
+    const vm = new Vue(Register).$mount()
+    vm.regUserName = '123';
+
+    vm.$el.querySelector('.btn').click()
+    Vue.nextTick(() => {
+      expect(api.registerUser).to.have.been.calledWith('123')
+      done()
+    })
+
+  })
+
 })
