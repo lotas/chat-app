@@ -4,11 +4,16 @@ import Vue from 'vue'
 import ChatApp from './ChatApp'
 import router from './router'
 
+import * as api from './api'
+import sharedStore from './store'
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  data: {
+    shared: sharedStore.state
+  },
   template: '<ChatApp/>',
   components: { ChatApp }
 })

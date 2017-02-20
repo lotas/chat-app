@@ -6,12 +6,14 @@ import { getRenderedComponent } from './utils'
 import Register from 'src/components/Register'
 
 import * as api from 'src/api'
+import sharedStore from 'src/store'
 
 describe('Register.vue', () => {
 
   var sandbox;
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
+    sharedStore.setUser(null)
   });
 
   afterEach(function () {
@@ -37,16 +39,16 @@ describe('Register.vue', () => {
 
   it('submits form and calls api successfuly', done => {
     sandbox.stub(api, "registerUser")
-      .returns(Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ name: 'test' })
-      }));
+      .returns(Promise.resolve({ name: 'test' }))
+
+    sandbox.stub(sharedStore, 'setUser')
 
     const vm = new Vue(Register).$mount()
     vm.regUserName = 'alice'
 
     vm.register().then(() => {
       expect(api.registerUser).to.have.been.calledWith('alice');
+      expect(sharedStore.setUser).to.have.been.calledWith({name: 'test'});
       done();
     }).catch(done);
   })

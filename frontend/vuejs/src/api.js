@@ -1,13 +1,34 @@
 const API = window.location.origin;
 
 /**
+ * @param {Object} options  passed to `fetch()`
+ * @return {Promise}
+ */
+export function makeApiCall(options) {
+    return fetch(options).then(res => {
+        const promise = new Promise((resolve, reject) => {
+            if (res.ok) {
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return res.json().then(data => resolve(data, res.status));
+                }
+                return res.text().then(data => resolve(data, res.status))
+            }
+            return res.text().then(data => reject(data, res.status));
+        });
+
+        return promise;
+    });
+}
+
+/**
  * Send register user request
  *
  * @param {String} name
  * @return {Promise}
  */
 export function registerUser(name) {
-    return fetch(`${API}/user`, {
+    return makeApiCall(`${API}/user`, {
         headers: new Headers({
             'Content-Type': 'application/json'
         }),
@@ -23,7 +44,7 @@ export function registerUser(name) {
  * @return {Promise}
  */
 export function unregisterUser(authToken) {
-    return fetch(`${API}/user`, {
+    return makeApiCall(`${API}/user`, {
         headers: new Headers({
             'Content-Type': 'application/json'
         }),
@@ -38,7 +59,7 @@ export function unregisterUser(authToken) {
  * @return {Promise}
  */
 export function fetchUsersList() {
-    return fetch(`${API}/users`).then(res => res.json());
+    return makeApiCall(`${API}/users`);
 }
 
 /**
@@ -50,7 +71,7 @@ export function fetchUsersList() {
  * @return {Promise}
  */
 export function sendMessageTo(to, text, authToken) {
-    return fetch(`${API}/message`, {
+    return makeApiCall(`${API}/message`, {
         headers: new Headers({
             'Content-Type': 'application/json'
         }),
@@ -81,3 +102,22 @@ export function connectWs(authToken, onMessage) {
     }
 }
 
+
+export function getStorage() {
+    return window && window.sessionStorage
+        ? window.sessionStorage
+        : {};
+}
+
+export function getFromStorage(key, defaultValue = null) {
+    const sessionStorage = getStorage();
+
+    return sessionStorage[key]
+                ? JSON.parse(sessionStorage[key])
+                : defaultValue;
+}
+export function setToStorage(key, value) {
+    const sessionStorage = getStorage();
+
+    sessionStorage[key] = JSON.stringify(value);
+}

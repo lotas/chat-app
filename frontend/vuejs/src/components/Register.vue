@@ -12,33 +12,27 @@
 
 <script>
   import * as api from '../api'
+  import sharedStore from '../store'
 
   export default {
     name: 'register',
     data: function () {
       return {
-        regUserName: ''
+        regUserName: '',
+        error: null,
+        shared: sharedStore.state
       }
     },
     methods: {
       register: function register() {
-        return api.registerUser(this.regUserName)
-          .then(res => {
-            if (res.ok) {
-              res.json().then(authUser => {
-                // ChatApp.user = authUser;
-                // setToStorage(STORAGE_USER, authUser);
+        const errHandler = (err, status) => this.error = err;
 
-                // debug(authUser);
-                // window.ChatApi.connectWs(authUser.authToken, onSocketMsg);
-                // window.ChatApi.fetchUsersList().then(renderUsers);
-              });
-            } else {
-              res.text().then(data => {
-                // debug('Register not ok: ', data);
-              })
-            }
-          });
+        return api.registerUser(this.regUserName)
+          .then((user, status) => {
+            sharedStore.setUser(user)
+            // nav away
+          }, errHandler)
+          .catch(errHandler)
       }
     }
   }
