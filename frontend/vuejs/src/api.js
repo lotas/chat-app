@@ -4,20 +4,23 @@ const API = window.location.origin;
  * @param {Object} options  passed to `fetch()`
  * @return {Promise}
  */
-export function makeApiCall(options) {
-    return fetch(options).then(res => {
-        const promise = new Promise((resolve, reject) => {
-            if (res.ok) {
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    return res.json().then(data => resolve(data, res.status));
-                }
-                return res.text().then(data => resolve(data, res.status))
-            }
-            return res.text().then(data => reject(data, res.status));
-        });
+export function makeApiCall(url, options) {
+    const returnValue = (data, status) => ({
+        data: data,
+        status: status
+    })
 
-        return promise;
+    return window.fetch(url, options).then(res => {
+        return new Promise((resolve, reject) => {
+            if (res.ok) {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return res.json().then(data => resolve(returnValue(data, res.status)));
+                }
+                return res.text().then(data => resolve(returnValue(data, res.status)))
+            }
+            return res.text().then(data => reject(returnValue(data, res.status)));
+        });
     });
 }
 

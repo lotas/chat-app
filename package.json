@@ -11,7 +11,9 @@
   "scripts": {
     "start": "node index.js",
     "postinstall": "cp -r ./node_modules/vue/dist/vue*js ./public/assets && cp -r ./node_modules/bootstrap/dist/ ./public/assets/",
-    "test": "eslint *.js chat public/*.js && jasmine **/*.spec.js"
+    "test": "eslint *.js chat public/*.js && jasmine **/*.spec.js",
+
+    "build:vue": "cd frontend/vuejs && npm run build && cp -r dist/ ../../public/"
   },
   "dependencies": {
     "body-parser": "^1.16.1",

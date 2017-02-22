@@ -13,6 +13,7 @@
 <script>
   import * as api from '../api'
   import sharedStore from '../store'
+  // import router from '../router'
 
   export default {
     name: 'register',
@@ -34,7 +35,8 @@
         return api.registerUser(this.regUserName)
           .then((user, status) => {
             sharedStore.setUser(user)
-            // nav away
+
+            this.$router.push('chatview')
           }, errHandler)
           .catch(errHandler)
       }

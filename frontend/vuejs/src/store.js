@@ -1,4 +1,4 @@
-import { getFromStorage } from './api'
+import { getFromStorage, setToStorage } from './api'
 
 const sharedStore = {
   state: {
@@ -6,6 +6,7 @@ const sharedStore = {
   },
   setUser(user) {
     this.state.user = user
+    setToStorage('auth.user', user)
   }
 }
 

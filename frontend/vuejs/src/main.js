@@ -15,5 +15,13 @@ new Vue({
     shared: sharedStore.state
   },
   template: '<ChatApp/>',
-  components: { ChatApp }
+  components: { ChatApp },
+  created() {
+    console.log(this.shared);
+    if (!this.shared.user) {
+      router.push('register')
+    } else {
+      router.push('chatview')
+    }
+  }
 })

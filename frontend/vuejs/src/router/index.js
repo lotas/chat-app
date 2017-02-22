@@ -11,19 +11,19 @@ Vue.use(Router)
 export default new Router({
   routes: [{
     path: '/',
-    name: 'Dashboard',
+    name: 'dashboard',
     component: Dashboard
   }, {
     path: '/register',
-    name: 'Register',
-    component: Unregister
+    name: 'register',
+    component: Register
   }, {
     path: '/unregister',
-    name: 'Quit chat',
+    name: 'unregister',
     component: Unregister
   }, {
     path: '/chat/:recepient',
-    name: 'Chat',
+    name: 'chatview',
     component: ChatView,
     props: true
   }]
