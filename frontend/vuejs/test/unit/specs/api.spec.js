@@ -1,5 +1,3 @@
-
-
 import Vue from 'vue'
 import * as sinon from 'sinon'
 
@@ -31,7 +29,7 @@ describe('api', () => {
 
 
   it('store: should save user to storage', () => {
-    sinon.stub(api, 'setToStorage').returns(true)
+    sandbox.stub(api, 'setToStorage').returns(true)
 
     const user = {name: 'yarik'}
 
@@ -85,7 +83,61 @@ describe('api', () => {
       expect(res.status).to.equal(200)
       done()
     }, done).catch(done)
+  })
 
+  it('should call unregisterUser()', done => {
+    fetchMock.delete('*', {
+      status: 200,
+      body: 'response'
+    });
+
+    api.unregisterUser('token').then(res => {
+      expect(res.data).to.equal('response')
+      expect(res.status).to.equal(200)
+      done()
+    }, done).catch(done)
+  })
+
+  it('should call fetchUsersList()', done => {
+    fetchMock.get('*', {
+      status: 200,
+      body: '[]'
+    });
+
+    api.fetchUsersList().then(res => {
+      expect(res.data).to.equal('[]')
+      expect(res.status).to.equal(200)
+      done()
+    }, done).catch(done)
+  })
+
+  it('should call sendMessageTo()', done => {
+    fetchMock.post('*', {
+      status: 200,
+      body: '[]'
+    });
+
+    api.sendMessageTo('to', 'text', 'token').then(res => {
+      expect(res.data).to.equal('[]')
+      expect(res.status).to.equal(200)
+      done()
+    }, done).catch(done)
+  })
+
+  it('should getStorag()', () => {
+    expect(api.getStorage).to.be.a('function')
+    expect(api.getStorage()).to.be.defined
+  })
+
+  it('should setToStorage() and getFromStorage()', () => {
+    expect(api.getFromStorage).to.be.a('function')
+    expect(api.setToStorage).to.be.a('function')
+
+    sandbox.stub(api, 'getStorage').returns({})
+
+    expect(api.getFromStorage('test.key', null)).to.be.null
+    api.setToStorage('test.key', 'newvalue')
+    expect(api.getFromStorage('test.key')).to.equal('newvalue')
   })
 
 })
