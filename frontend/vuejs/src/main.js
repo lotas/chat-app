@@ -7,6 +7,8 @@ import router from './router'
 import * as api from './api'
 import sharedStore from './store'
 
+import 'bootstrap/dist/css/bootstrap.css'
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -14,14 +16,13 @@ new Vue({
   data: {
     shared: sharedStore.state
   },
-  template: '<ChatApp/>',
+  template: '<ChatApp v-bind:user="shared.user" />',
   components: { ChatApp },
   created() {
-    console.log(this.shared);
     if (!this.shared.user) {
-      router.push('register')
+      router.push({name: 'register'})
     } else {
-      router.push('chatview')
+      router.push({name: 'chat'})
     }
   }
 })

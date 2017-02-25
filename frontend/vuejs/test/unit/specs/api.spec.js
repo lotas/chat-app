@@ -8,7 +8,6 @@ import fetchMock from 'fetch-mock'
 import { getRenderedComponent, jsonError, jsonOk } from './utils'
 
 import * as api from 'src/api'
-import sharedStore from 'src/store'
 
 
 describe('api', () => {
@@ -25,18 +24,6 @@ describe('api', () => {
   afterEach(function () {
     sandbox.restore();
     fetchMock.restore()
-  })
-
-
-  it('store: should save user to storage', () => {
-    sandbox.stub(api, 'setToStorage').returns(true)
-
-    const user = {name: 'yarik'}
-
-    expect(sharedStore.state.user).to.equal(null)
-    sharedStore.setUser(user)
-    expect(sharedStore.state.user).to.equal(user)
-    expect(api.setToStorage).to.have.been.calledWith('auth.user', user)
   })
 
   it('should makeApiCall()', done => {

@@ -1,4 +1,12 @@
-const API = window.location.origin;
+const API = getApiUrl();
+
+function getApiUrl() {
+    let baseUrl = `${window.location.origin}`
+    if (window.env && window.env.API_URL) {
+        baseUrl += window.env.API_URL
+    }
+    return baseUrl
+}
 
 /**
  * @param {Object} options  passed to `fetch()`

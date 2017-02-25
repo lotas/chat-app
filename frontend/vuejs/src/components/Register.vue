@@ -13,15 +13,13 @@
 <script>
   import * as api from '../api'
   import sharedStore from '../store'
-  // import router from '../router'
 
   export default {
     name: 'register',
     data: function () {
       return {
         regUserName: '',
-        error: null,
-        shared: sharedStore.state
+        error: null
       }
     },
     methods: {
@@ -33,10 +31,10 @@
         const errHandler = (err, status) => this.error = err;
 
         return api.registerUser(this.regUserName)
-          .then((user, status) => {
-            sharedStore.setUser(user)
+          .then(res => {
+            sharedStore.setUser(res.data)
 
-            this.$router.push('chatview')
+            this.$router.push({name: 'chat'})
           }, errHandler)
           .catch(errHandler)
       }

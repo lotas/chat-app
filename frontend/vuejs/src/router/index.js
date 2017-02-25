@@ -22,6 +22,10 @@ export default new Router({
     name: 'unregister',
     component: Unregister
   }, {
+    path: '/chat',
+    name: 'chat',
+    component: ChatView,
+  }, {
     path: '/chat/:recepient',
     name: 'chatview',
     component: ChatView,
