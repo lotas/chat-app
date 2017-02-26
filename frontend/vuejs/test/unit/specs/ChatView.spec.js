@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import * as sinon from 'sinon';
-// const sinon = require('sinon');
 
-import { getRenderedComponent } from './utils'
+require('es6-promise').polyfill()
+import 'isomorphic-fetch'
+import fetchMock from 'fetch-mock'
+
+import { getRenderedWithRouterComponent } from './utils'
 import ChatView from 'src/components/ChatView'
 
 import * as api from 'src/api'
@@ -14,6 +17,9 @@ describe('ChatView.vue', () => {
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     sharedStore.setUser(null)
+    fetchMock.setImplementations({
+      Promise: require('es6-promise').Promise
+    })
   });
 
   afterEach(function () {
@@ -21,7 +27,7 @@ describe('ChatView.vue', () => {
   });
 
   it('should render title', () => {
-    const vm = getRenderedComponent(ChatView);
+    const vm = getRenderedWithRouterComponent(ChatView);
     expect(vm.$el.querySelector('.users-pane .panel-heading').textContent)
       .to.match(/Users/)
   })
@@ -30,58 +36,82 @@ describe('ChatView.vue', () => {
     expect(ChatView.data).to.be.a('function');
 
     const defaultData = ChatView.data()
-    expect(defaultData.regUserName).to.equal('')
+    expect(defaultData.msgInput).to.equal('')
+    expect(defaultData.shared).to.be.a('object')
   });
 
-  // it('has ChatView function', () => {
-  //   expect(ChatView.methods.ChatView).to.be.a('function')
-  // })
+  it('fetch users and subscribe to socket', (done) => {
+    fetchMock.get(`http://${window.location.host}/users`, {
+      status: 200,
+      body: '["one", "two"]',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
-  // it('submits form and calls api successfuly', done => {
-  //   sandbox.stub(api, "ChatViewUser")
-  //     .returns(Promise.resolve({ name: 'test' }))
+    sandbox.stub(api, 'connectWs').returns(true)
+    sharedStore.setUser({authToken: 'auth'})
 
-  //   sandbox.stub(sharedStore, 'setUser')
+    const vm = getRenderedWithRouterComponent(ChatView, {
+      recepient: 'me'
+    })
 
-  //   const vm = new Vue(ChatView).$mount()
-  //   vm.regUserName = 'alice'
+    // .$nextTick() doesn't wait long enough :-/
+    setTimeout(() => {
+      expect(vm.shared.users).to.include('one')
+      expect(vm.shared.users).to.include('two')
+      expect(api.connectWs).to.have.been.calledWith('auth')
+      done()
+    }, 1)
+  })
 
-  //   vm.ChatView().then(() => {
-  //     expect(api.ChatViewUser).to.have.been.calledWith('alice');
-  //     expect(sharedStore.setUser).to.have.been.calledWith({name: 'test'});
-  //     done();
-  //   }).catch(done);
-  // })
+  it('should sendMessage()', done => {
+    const msg = {id: '123', to: 'me'}
 
-  // it('submits form and calls api fails', done => {
-  //   sandbox.stub(api, "ChatViewUser")
-  //     .returns(Promise.resolve({
-  //       ok: false,
-  //       text: () => Promise.resolve({ name: 'test' })
-  //     }));
+    fetchMock.post(`http://${window.location.host}/message`, {
+      status: 200,
+      body: JSON.stringify(msg),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
-  //   const vm = new Vue(ChatView).$mount()
-  //   vm.regUserName = 'bob'
+    sharedStore.setUser({authToken: 'auth'})
+    sandbox.stub(api, 'sendMessageTo').returns(Promise.resolve({
+      data: msg,
+      status: 200
+    }))
 
-  //   vm.ChatView().then(() => {
-  //     expect(api.ChatViewUser).to.have.been.calledWith('bob');
-  //     done();
-  //   }).catch(done);
-  // })
+    const vm = getRenderedWithRouterComponent(ChatView, {
+      recepient: 'me'
+    })
+    vm.msgInput = 'msg'
+    vm.sendMessage()
 
-  // it('should submit on click', done => {
-  //   sandbox.stub(api, "ChatViewUser")
-  //     .returns(Promise.resolve());
+    vm.$nextTick(() => {
+      expect(api.sendMessageTo).to.have.been.calledWith('me', 'msg', 'auth')
+      done()
+    })
+  })
 
-  //   const vm = new Vue(ChatView).$mount()
-  //   vm.regUserName = '123';
+  it('onMsgResponse()', done => {
+    const res = {
+      data: {id: '123', to: 'me'},
+      status: 200
+    }
 
-  //   vm.$el.querySelector('.btn').click()
-  //   Vue.nextTick(() => {
-  //     expect(api.ChatViewUser).to.have.been.calledWith('123')
-  //     done()
-  //   })
+    sandbox.stub(sharedStore, 'appendMessage').returns(true)
+    const vm = getRenderedWithRouterComponent(ChatView, {
+      recepient: 'me'
+    })
 
-  // })
+    vm.msgInput = 'trash'
+    vm.onMsgResponse(res)
+    vm.$nextTick(() => {
+      expect(sharedStore.appendMessage).to.have.been.calledWith('me', res.data)
+      expect(vm.msgInput).to.equal('')
+      done()
+    })
+  })
 
 })

@@ -60,7 +60,7 @@ describe('api', () => {
   })
 
   it('should call registerUser()', done => {
-    fetchMock.post('*', {
+    fetchMock.post(`http://${window.location.host}/user`, {
       status: 200,
       body: 'response'
     });
@@ -73,7 +73,7 @@ describe('api', () => {
   })
 
   it('should call unregisterUser()', done => {
-    fetchMock.delete('*', {
+    fetchMock.delete(`http://${window.location.host}/user`, {
       status: 200,
       body: 'response'
     });
@@ -86,7 +86,7 @@ describe('api', () => {
   })
 
   it('should call fetchUsersList()', done => {
-    fetchMock.get('*', {
+    fetchMock.get(`http://${window.location.host}/users`, {
       status: 200,
       body: '[]'
     });
@@ -99,7 +99,7 @@ describe('api', () => {
   })
 
   it('should call sendMessageTo()', done => {
-    fetchMock.post('*', {
+    fetchMock.post(`http://${window.location.host}/message`, {
       status: 200,
       body: '[]'
     });

@@ -1,11 +1,11 @@
 <template>
   <div class="unregister">
     <h2>Good bye!</h2>
-    <p class="error" v-if="error">{{error}}</p>
+    <p class="error" v-show="error">{{error}}</p>
   </div>
 </template>
 <script>
-  import { unregisterUser } from '../api'
+  import * as api from '../api'
   import sharedStore from '../store'
 
   export default {
@@ -18,7 +18,7 @@
     },
     created() {
       if (this.shared.user) {
-        unregisterUser(this.shared.user.authToken)
+        api.unregisterUser(this.shared.user.authToken)
           .then(res => {
             sharedStore.setUser(null)
           }, err => {

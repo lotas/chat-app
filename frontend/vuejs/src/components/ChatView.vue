@@ -49,12 +49,12 @@
       }
     },
     created() {
-      this.fetchUserList()
+      this.fetchUsersList()
       this.subscribeWebsocket()
     },
     methods: {
-      fetchUserList() {
-        api.fetchUsersList().then(res => {
+      fetchUsersList() {
+        return api.fetchUsersList().then(res => {
           this.shared.users = res.data
         })
       },
@@ -68,13 +68,14 @@
         let { user } = this.shared
 
         api.sendMessageTo(this.recepient, this.msgInput, user.authToken)
-          .then(res => {
-            const msg = res.data
-            sharedStore.appendMessage(msg.to, msg);
-            this.msgInput = '';
-          }).catch(err => {
+          .then(this.onMsgResponse).catch(err => {
             console.error(err)
           });
+      },
+      onMsgResponse(res) {
+        const msg = res.data
+        sharedStore.appendMessage(msg.to, msg);
+        this.msgInput = '';
       }
     }
   }

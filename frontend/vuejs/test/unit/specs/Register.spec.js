@@ -39,25 +39,33 @@ describe('Register.vue', () => {
 
   it('submits form and calls api successfuly', done => {
     sandbox.stub(api, "registerUser")
-      .returns(Promise.resolve({ name: 'test' }))
+      .returns(Promise.resolve({
+        status: 200,
+        data: { name: 'test' }
+      }))
 
     sandbox.stub(sharedStore, 'setUser')
 
-    const vm = new Vue(Register).$mount()
-    vm.regUserName = 'alice'
+    const vm = getRenderedComponent(Register)
 
-    vm.register().then(() => {
-      expect(api.registerUser).to.have.been.calledWith('alice');
-      expect(sharedStore.setUser).to.have.been.calledWith({name: 'test'});
-      done();
-    }).catch(done);
+    vm.regUserName = 'alice'
+    sandbox.stub(vm, 'navigateTo').returns(true)
+
+    vm.$nextTick(() => {
+      vm.register().then(() => {
+        expect(api.registerUser).to.have.been.calledWith('alice');
+        expect(sharedStore.setUser).to.have.been.calledWith({name: 'test'});
+        expect(vm.navigateTo).to.have.been.calledWith({name: 'chat'});
+        done();
+      }).catch(done);
+    })
   })
 
   it('submits form and calls api fails', done => {
     sandbox.stub(api, "registerUser")
       .returns(Promise.resolve({
-        ok: false,
-        text: () => Promise.resolve({ name: 'test' })
+        status: 200,
+        data: { name: 'test' }
       }));
 
     const vm = new Vue(Register).$mount()

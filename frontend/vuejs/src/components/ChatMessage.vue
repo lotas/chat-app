@@ -1,7 +1,6 @@
 <template>
   <div class="chatMessage">
       <Avatar userName="msg.from" />
-      <strong>{{msg.from}}</strong>&gt;
       <span class="text">{{msg.text}}</span>
       <span class="pull-right label label-default">
           {{status}}

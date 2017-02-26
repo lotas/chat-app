@@ -50,16 +50,4 @@ describe('Unregister.vue', () => {
     });
   })
 
-  it('Renders error', done => {
-    sharedStore.setUser(null) //avoid api call
-
-    const vm = new Vue(Unregister).$mount()
-    vm.error = 'errorHere'
-
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.error').textContent).to.equal('errorHere')
-      done()
-    });
-  })
-
 })

@@ -23,9 +23,9 @@
       }
     },
     methods: {
-      register: function register() {
+      register() {
         if (!this.regUserName) {
-          return false
+          return Promise.reject('no username')
         }
 
         const errHandler = (err, status) => this.error = err;
@@ -33,10 +33,12 @@
         return api.registerUser(this.regUserName)
           .then(res => {
             sharedStore.setUser(res.data)
-
-            this.$router.push({name: 'chat'})
+            this.navigateTo({name: 'chat'})
           }, errHandler)
           .catch(errHandler)
+      },
+      navigateTo(opts) {
+        this.$router.push(opts)
       }
     }
   }

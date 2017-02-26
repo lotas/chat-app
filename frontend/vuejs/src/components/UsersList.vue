@@ -18,7 +18,9 @@ export default {
     Avatar
   },
   methods: {
-    isActive: (user) => this.recepient === user
+    isActive(user) {
+      return this.recepient === user
+    }
   }
 }
 
