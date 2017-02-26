@@ -1,5 +1,7 @@
 # Chat App: Backend and Web-Client
 
+[![Build Status](https://travis-ci.org/lotas/chat-app.svg?branch=master)](https://travis-ci.org/lotas/chat-app)
+
 ![Demo](http://g.recordit.co/Ei4aSxodcQ.gif "Demo interaction")
 
 
