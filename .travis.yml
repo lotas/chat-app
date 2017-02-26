@@ -2,3 +2,9 @@ language: node_js
 node_js:
   - "7"
 
+before_script:
+  - cd frontend/vuejs && npm install
+
+script:
+  - npm test
+  - cd frontend/vuejs && npm test
