@@ -3,7 +3,7 @@ node_js:
   - "7"
 
 before_script:
-  - cd frontend/vuejs && npm install
+  - cd frontend/vuejs && npm install && cd ../../
 
 script:
   - npm test
